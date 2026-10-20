@@ -17,6 +17,7 @@ public class newUsers extends javax.swing.JFrame {
      */
     public newUsers() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -96,6 +97,7 @@ public class newUsers extends javax.swing.JFrame {
 
         btnSalir.setBackground(new java.awt.Color(255, 102, 102));
         btnSalir.setText("Salir");
+        btnSalir.addActionListener(this::btnSalirActionPerformed);
         jPanel1.add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(388, 450, -1, -1));
 
         btnBaja.setText("EJECUTAR");
@@ -129,7 +131,11 @@ public class newUsers extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAltaActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        // TODO add your handling code here:
+        mostrarUsuarios mostrar = new mostrarUsuarios();
+        mostrar.setVisible(true);
+        this.dispose();
+        
+        
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
@@ -137,8 +143,14 @@ public class newUsers extends javax.swing.JFrame {
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        // TODO add your handling code here:
+        menu_Usuarios mU = new menu_Usuarios();
+        mU.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     /**
      * @param args the command line arguments

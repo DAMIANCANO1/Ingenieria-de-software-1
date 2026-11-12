@@ -9,7 +9,7 @@ package SistemaBasico;
  * @author canod
  */
 public class newUsers extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(newUsers.class.getName());
 
     /**
@@ -134,12 +134,14 @@ public class newUsers extends javax.swing.JFrame {
         mostrarUsuarios mostrar = new mostrarUsuarios();
         mostrar.setVisible(true);
         this.dispose();
-        
-        
+
+
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        // TODO add your handling code here:
+        ModificaUsuarios mU = new ModificaUsuarios();
+        mU.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed

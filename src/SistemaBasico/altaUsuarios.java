@@ -57,15 +57,15 @@ public class altaUsuarios extends javax.swing.JFrame {
 
         String intereses = "";
         if (checkLibros.isSelected()) {
-            intereses += "Libros";
+            intereses += "Libros,";
 
         }
         if (checkMusica.isSelected()) {
-            intereses += "Musica";
+            intereses += "Musica,";
 
         }
         if (checkDeportes.isSelected()) {
-            intereses += "Deportes";
+            intereses += "Deportes,";
 
         }
         if (checkOtros.isSelected()) {
@@ -76,7 +76,8 @@ public class altaUsuarios extends javax.swing.JFrame {
 
         PreparedStatement pps;
         try {
-            pps = cn.prepareStatement("INSERT INTO empleados (nombre, apellidop, apellidom, telefono, correo, estado_civil, hijos, intereses) VALUES (?,?,?,?,?,?,?,?)");
+            pps = cn.prepareStatement("INSERT INTO empleados (nombre, apellidop, apellidom,"
+                    + " telefono, correo, estado_civil, hijos, intereses) VALUES (?,?,?,?,?,?,?,?)");
             pps.setString(1, nombre);
             pps.setString(2, ap);
             pps.setString(3, am);
@@ -192,6 +193,7 @@ public class altaUsuarios extends javax.swing.JFrame {
         campoEC.setText("Estado Civil:");
 
         menuEC.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SOLTERO", "CASADO", "OTRO", " " }));
+        menuEC.addActionListener(this::menuECActionPerformed);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setText("HIJOS?");
@@ -413,6 +415,10 @@ public class altaUsuarios extends javax.swing.JFrame {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void menuECActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuECActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuECActionPerformed
 
     /**
      * @param args the command line arguments

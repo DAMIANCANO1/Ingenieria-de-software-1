@@ -9,7 +9,7 @@ package Catflix;
  * @author canod
  */
 public class Configuracion extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Configuracion.class.getName());
 
     /**
@@ -37,6 +37,7 @@ public class Configuracion extends javax.swing.JFrame {
         btnSalir = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         btnRegresar = new javax.swing.JButton();
+        btnRegresar1 = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
@@ -70,6 +71,10 @@ public class Configuracion extends javax.swing.JFrame {
         btnRegresar.setText("REGRESAR");
         btnRegresar.addActionListener(this::btnRegresarActionPerformed);
 
+        btnRegresar1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnRegresar1.setText("ELIMINAR");
+        btnRegresar1.addActionListener(this::btnRegresar1ActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -88,6 +93,8 @@ public class Configuracion extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnAgrega)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnRegresar1)
+                                .addGap(49, 49, 49)
                                 .addComponent(btnEdita))
                             .addComponent(jLabel1))
                         .addGap(106, 106, 106))
@@ -105,7 +112,9 @@ public class Configuracion extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAgrega)
-                    .addComponent(btnEdita))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnEdita)
+                        .addComponent(btnRegresar1)))
                 .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRegresar)
@@ -149,6 +158,12 @@ public class Configuracion extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
+    private void btnRegresar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresar1ActionPerformed
+        EliminaPelicula1 eL = new EliminaPelicula1();
+        eL.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnRegresar1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -178,6 +193,7 @@ public class Configuracion extends javax.swing.JFrame {
     private javax.swing.JButton btnAgrega;
     private javax.swing.JButton btnEdita;
     private javax.swing.JButton btnRegresar;
+    private javax.swing.JButton btnRegresar1;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

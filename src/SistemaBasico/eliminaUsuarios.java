@@ -17,20 +17,32 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class eliminaUsuarios extends javax.swing.JFrame {
-
+    
     private static final Logger logger = Logger.getLogger(eliminaUsuarios.class.getName());
-
+    
     conexion miConexion = new conexion();
     Connection cn = miConexion.conexionBD();
-
+    
     PreparedStatement pps;
     ResultSet rs;
-
+    
     public eliminaUsuarios() {
         initComponents();
         obtenerRegistroUsuarios();
-        this.setTitle("MODIFICAR USUARIOS");
+        this.setTitle("ELIMINA USUARIOS");
         this.setLocationRelativeTo(null);
+        campoNombre.setEnabled(false);
+        campoAp.setEnabled(false);
+        CampoApMat.setEnabled(false);
+        campoTelefono.setEnabled(false);
+        campoEmail.setEnabled(false);
+        menuEC.setEnabled(false);
+        radioSi.setEnabled(false);
+        radioNo.setEnabled(false);
+        checkMusica.setEnabled(false);
+        checkLibros.setEnabled(false);
+        checkDeportes.setEnabled(false);
+        checkOtros.setEnabled(false);
     }
 
     // 1. Carga los IDs de la tabla empleados en comboUsuarios
@@ -53,13 +65,13 @@ public class eliminaUsuarios extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Selecciona un ID válido de la lista.");
             return;
         }
-
+        
         String registro = comboUsuarios.getSelectedItem().toString();
         try {
             pps = cn.prepareStatement("SELECT * FROM empleados WHERE id = ?");
             pps.setString(1, registro);
             rs = pps.executeQuery();
-
+            
             if (rs.next()) {
                 campoNombre.setText(rs.getString("nombre"));
                 campoAp.setText(rs.getString("apellidop"));
@@ -67,7 +79,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
                 campoTelefono.setText(rs.getString("telefono"));
                 campoEmail.setText(rs.getString("correo"));
                 menuEC.setSelectedItem(rs.getString("estado_civil"));
-
+                
                 if (rs.getInt("hijos") == 1) {
                     radioSi.setSelected(true);
                 } else {
@@ -79,7 +91,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
                 checkMusica.setSelected(false);
                 checkDeportes.setSelected(false);
                 checkOtros.setSelected(false);
-
+                
                 String intereses = rs.getString("intereses");
                 if (intereses != null && !intereses.isEmpty()) {
                     String[] elementos = intereses.split("[ ,]+");
@@ -101,72 +113,29 @@ public class eliminaUsuarios extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Registro no encontrado", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error al consultar usuario", ex);
         }
     }
 
-    // 3. Captura los datos editados y ejecuta el UPDATE con los 9 parámetros
-    public void capturaActualizaDatos() {
-        if (comboUsuarios.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(null, "Selecciona un ID antes de actualizar.");
-            return;
-        }
-
-        String idRegistro = comboUsuarios.getSelectedItem().toString();
-        String nombre = campoNombre.getText().trim();
-        String aP = campoAp.getText().trim();
-        String aM = CampoApMat.getText().trim();
-        String telefono = campoTelefono.getText().trim();
-        String email = campoEmail.getText().trim();
-        String estado_civil = menuEC.getSelectedItem() != null ? menuEC.getSelectedItem().toString() : "";
-
-        int hijos = radioSi.isSelected() ? 1 : 0;
-
-        StringBuilder interesesBuilder = new StringBuilder();
-        if (checkLibros.isSelected()) {
-            interesesBuilder.append("Libros,");
-        }
-        if (checkDeportes.isSelected()) {
-            interesesBuilder.append("Deportes,");
-        }
-        if (checkMusica.isSelected()) {
-            interesesBuilder.append("Musica,");
-        }
-        if (checkOtros.isSelected()) {
-            interesesBuilder.append("Otros ");
-        }
-
-        String intereses = interesesBuilder.toString().trim();
-
+    //metodo que elimia registro seleccionado
+    public void eliminaDatos() {
         try {
-            String sql = "UPDATE empleados SET nombre = ?, apellidop = ?, apellidom = ?, telefono = ?, correo = ?, estado_civil = ?, hijos = ?, intereses = ? WHERE id = ?";
-            pps = cn.prepareStatement(sql);
-
-            pps.setString(1, nombre);
-            pps.setString(2, aP);
-            pps.setString(3, aM);
-            pps.setString(4, telefono);
-            pps.setString(5, email);
-            pps.setString(6, estado_civil);
-            pps.setInt(7, hijos);
-            pps.setString(8, intereses);
-            pps.setString(9, idRegistro); // Noveno parámetro para el WHERE id = ?
-
+            pps = cn.prepareStatement("DELETE FROM empleados WHERE id = ?");
+            pps.setString(1, comboUsuarios.getSelectedItem().toString());
             int res = pps.executeUpdate();
-
-            if (res > 0) {
-                JOptionPane.showMessageDialog(null, "DATOS ACTUALIZADOS CON ÉXITO");
-                limpiaCaampo();
-                obtenerRegistroUsuarios(); // Recarga la lista por si hubo cambios
-            } else {
-                JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro.");
+            if (res>0) {
+                JOptionPane.showMessageDialog(null, "DATOS ELIMINADOS CON EXITO", "REGISTRO E", JOptionPane.WARNING_MESSAGE);
+     
+            }else{
+                JOptionPane.showMessageDialog(null, "ERROR AL ELIMINAR","ERROR",JOptionPane.ERROR_MESSAGE);
             }
-
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al guardar los datos: " + ex.getMessage(), "ERROR SQL", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "ERROR AL ELIMINAR");
+            System.getLogger(eliminaUsuarios.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        
     }
 
     // 4. Limpia los controles del formulario
@@ -217,7 +186,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
         checkDeportes = new javax.swing.JCheckBox();
         checkOtros = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
-        btnActualizarUsuario = new javax.swing.JButton();
+        btnEliminarUsuario = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
@@ -229,7 +198,8 @@ public class eliminaUsuarios extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
         jLabel1.setFont(new java.awt.Font("Elephant", 0, 36)); // NOI18N
-        jLabel1.setText("ALTA DE USUARIOS");
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("ELIMINA USUARIOS");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Nombre (S):");
@@ -287,11 +257,11 @@ public class eliminaUsuarios extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/img/usuarios.png"))); // NOI18N
 
-        btnActualizarUsuario.setBackground(new java.awt.Color(102, 204, 0));
-        btnActualizarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnActualizarUsuario.setText("ACTUALIZAR");
-        btnActualizarUsuario.setToolTipText("");
-        btnActualizarUsuario.addActionListener(this::btnActualizarUsuarioActionPerformed);
+        btnEliminarUsuario.setBackground(new java.awt.Color(255, 51, 51));
+        btnEliminarUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnEliminarUsuario.setText("ELIMINAR");
+        btnEliminarUsuario.setToolTipText("");
+        btnEliminarUsuario.addActionListener(this::btnEliminarUsuarioActionPerformed);
 
         btnRegresar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnRegresar.setText("REGRESAR");
@@ -301,7 +271,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
         btnSalir.setText("SALIR");
         btnSalir.addActionListener(this::btnSalirActionPerformed);
 
-        jLabel10.setText("BUSCA USUSARIOS");
+        jLabel10.setText("SELECCIONA REGISTRO A ELIMINAR");
 
         btnBuscarRegsitroUsuario.setText("BUSCAR");
         btnBuscarRegsitroUsuario.addActionListener(this::btnBuscarRegsitroUsuarioActionPerformed);
@@ -319,7 +289,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(61, Short.MAX_VALUE)
+                        .addContainerGap(33, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -381,7 +351,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
                         .addGap(26, 26, 26))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(170, 170, 170)
-                        .addComponent(btnActualizarUsuario)
+                        .addComponent(btnEliminarUsuario)
                         .addGap(18, 18, 18)
                         .addComponent(btnSalir)
                         .addGap(38, 38, 38)
@@ -428,7 +398,7 @@ public class eliminaUsuarios extends javax.swing.JFrame {
                     .addComponent(jLabel9)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnActualizarUsuario)
+                            .addComponent(btnEliminarUsuario)
                             .addComponent(jLabel10)
                             .addComponent(btnSalir)
                             .addComponent(btnRegresar))
@@ -489,12 +459,13 @@ public class eliminaUsuarios extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_checkOtrosActionPerformed
 
-    private void btnActualizarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarUsuarioActionPerformed
-        capturaActualizaDatos();
-    }//GEN-LAST:event_btnActualizarUsuarioActionPerformed
+    private void btnEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarUsuarioActionPerformed
+        eliminaDatos();
+        limpiaCaampo();
+    }//GEN-LAST:event_btnEliminarUsuarioActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        MenuUsers mU = new MenuUsers();
+        newUsers mU = new newUsers();
         mU.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
@@ -542,8 +513,8 @@ public class eliminaUsuarios extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField CampoApMat;
-    private javax.swing.JButton btnActualizarUsuario;
     private javax.swing.JButton btnBuscarRegsitroUsuario;
+    private javax.swing.JButton btnEliminarUsuario;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JTextField campoAp;

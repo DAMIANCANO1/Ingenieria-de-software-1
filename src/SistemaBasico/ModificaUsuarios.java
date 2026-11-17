@@ -494,7 +494,7 @@ public class ModificaUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_btnActualizarUsuarioActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-        MenuUsers mU = new MenuUsers();
+        newUsers mU = new newUsers();
         mU.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed

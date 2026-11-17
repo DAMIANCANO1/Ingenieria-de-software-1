@@ -4,20 +4,76 @@
  */
 package Catflix;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author canod
  */
 public class Cartelera extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Cartelera.class.getName());
 
-    /**
-     * Creates new form Inicio
-     */
+    conexion miConexion = new conexion();
+    Connection cn = miConexion.conexionBD();
+
+    PreparedStatement pps;
+    ResultSet rs;
+
+    public void obtenerRegistroPeliculas() {
+        try {
+            pps = cn.prepareStatement("SELECT id FROM cine");
+            rs = pps.executeQuery();
+            comboBuscar.removeAllItems();
+            while (rs.next()) {
+                comboBuscar.addItem(String.valueOf(rs.getInt("id")));
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error al obtener IDs de peliculas", ex);
+        }
+    }
+
+    public void obtenerInfo() {
+        if (comboBuscar.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "Selecciona un ID válido de la lista.");
+            return;
+        }
+
+        String registro = comboBuscar.getSelectedItem().toString();
+        try {
+            pps = cn.prepareStatement("SELECT * FROM cine WHERE id = ?");
+            pps.setString(1, registro);
+            rs = pps.executeQuery();
+
+            if (rs.next()) {
+                salidaTitulo.setText(rs.getString("titulo"));
+                salidaGenero.setText(rs.getString("genero"));
+                salidaSubtitulos.setText(rs.getString("subtitulos"));
+                salidaPais.setText(rs.getString("pais"));
+                salidaAño.setText(rs.getString("año"));
+                salidaDuracion.setText(rs.getString("duracion"));
+                salidaResumen.setText(rs.getString("resumen"));
+                salidaIdioma.setText(rs.getString("idioma"));
+                salidaClasificacion.setText(rs.getString("clasificacion"));
+
+            }
+
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Error al consultar usuario", ex);
+        }
+    }
+
     public Cartelera() {
         initComponents();
         this.setLocationRelativeTo(null);
+        obtenerRegistroPeliculas();
     }
 
     /**
@@ -31,6 +87,30 @@ public class Cartelera extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        comboBuscar = new javax.swing.JComboBox<>();
+        btnBuscar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        idioma = new javax.swing.JLabel();
+        salidaTitulo = new javax.swing.JLabel();
+        genero = new javax.swing.JLabel();
+        sub = new javax.swing.JLabel();
+        ano = new javax.swing.JLabel();
+        pais = new javax.swing.JLabel();
+        duracion = new javax.swing.JLabel();
+        clasificacion = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        salidaResumen = new javax.swing.JTextArea();
+        lblR = new javax.swing.JLabel();
+        salidaPais = new javax.swing.JTextField();
+        salidaDuracion = new javax.swing.JTextField();
+        salidaClasificacion = new javax.swing.JTextField();
+        salidaGenero = new javax.swing.JTextField();
+        salidaIdioma = new javax.swing.JTextField();
+        salidaSubtitulos = new javax.swing.JTextField();
+        salidaAño = new javax.swing.JTextField();
+        btnRegresar = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -42,21 +122,192 @@ public class Cartelera extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("CARTELERA");
 
+        btnBuscar.setText("BUSCAR");
+        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Catflix/img/popcorn.png"))); // NOI18N
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Catflix/img/popcorn.png"))); // NOI18N
+
+        idioma.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        idioma.setForeground(new java.awt.Color(0, 0, 0));
+        idioma.setText("IDIOMA");
+
+        salidaTitulo.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
+        salidaTitulo.setForeground(new java.awt.Color(0, 0, 0));
+        salidaTitulo.setText("TITULO");
+
+        genero.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        genero.setForeground(new java.awt.Color(0, 0, 0));
+        genero.setText("GENERO");
+
+        sub.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        sub.setForeground(new java.awt.Color(0, 0, 0));
+        sub.setText("SUBTITULOS");
+
+        ano.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        ano.setForeground(new java.awt.Color(0, 0, 0));
+        ano.setText("AÑO");
+
+        pais.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        pais.setForeground(new java.awt.Color(0, 0, 0));
+        pais.setText("PAIS");
+
+        duracion.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        duracion.setForeground(new java.awt.Color(0, 0, 0));
+        duracion.setText("DURACION");
+
+        clasificacion.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        clasificacion.setForeground(new java.awt.Color(0, 0, 0));
+        clasificacion.setText("CLASIFICACION");
+
+        salidaResumen.setColumns(20);
+        salidaResumen.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        salidaResumen.setRows(5);
+        jScrollPane1.setViewportView(salidaResumen);
+
+        lblR.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        lblR.setForeground(new java.awt.Color(0, 0, 0));
+        lblR.setText("RESUMEN");
+
+        salidaPais.addActionListener(this::salidaPaisActionPerformed);
+
+        salidaDuracion.addActionListener(this::salidaDuracionActionPerformed);
+
+        salidaClasificacion.addActionListener(this::salidaClasificacionActionPerformed);
+
+        salidaGenero.addActionListener(this::salidaGeneroActionPerformed);
+
+        salidaIdioma.addActionListener(this::salidaIdiomaActionPerformed);
+
+        salidaSubtitulos.addActionListener(this::salidaSubtitulosActionPerformed);
+
+        salidaAño.addActionListener(this::salidaAñoActionPerformed);
+
+        btnRegresar.setText("REGRESAR");
+        btnRegresar.addActionListener(this::btnRegresarActionPerformed);
+
+        btnSalir.setText("SALIR");
+        btnSalir.addActionListener(this::btnSalirActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(169, 169, 169)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(idioma)
+                                .addGap(202, 202, 202)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(sub)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(salidaSubtitulos, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(duracion)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(salidaDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(lblR)
+                                            .addComponent(clasificacion))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(salidaClasificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(153, 153, 153))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(salidaIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(pais)
+                                        .addGap(44, 44, 44)
+                                        .addComponent(salidaPais, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(genero)
+                            .addComponent(ano))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(salidaGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salidaAño, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 556, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel1)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel2))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(131, 131, 131)
+                                    .addComponent(comboBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(118, 118, 118)
+                                    .addComponent(btnBuscar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(215, 215, 215))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(335, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(303, 303, 303))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(salidaTitulo)
+                .addGap(450, 450, 450))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(348, 348, 348)
+                .addComponent(btnRegresar)
+                .addGap(188, 188, 188)
+                .addComponent(btnSalir)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(salidaTitulo)
                 .addGap(22, 22, 22)
-                .addComponent(jLabel1)
-                .addContainerGap(477, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(idioma)
+                            .addComponent(genero)
+                            .addComponent(sub)
+                            .addComponent(salidaGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salidaIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salidaSubtitulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(36, 36, 36)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(pais)
+                            .addComponent(duracion)
+                            .addComponent(ano)
+                            .addComponent(salidaPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salidaDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salidaAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(32, 32, 32)
+                        .addComponent(clasificacion))
+                    .addComponent(salidaClasificacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addComponent(lblR)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegresar)
+                    .addComponent(btnSalir))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -72,6 +323,48 @@ public class Cartelera extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        obtenerInfo();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void salidaPaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaPaisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaPaisActionPerformed
+
+    private void salidaDuracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaDuracionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaDuracionActionPerformed
+
+    private void salidaClasificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaClasificacionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaClasificacionActionPerformed
+
+    private void salidaGeneroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaGeneroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaGeneroActionPerformed
+
+    private void salidaIdiomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaIdiomaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaIdiomaActionPerformed
+
+    private void salidaSubtitulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaSubtitulosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaSubtitulosActionPerformed
+
+    private void salidaAñoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salidaAñoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_salidaAñoActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+        Inicio inicio = new Inicio();
+        inicio.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnRegresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -99,7 +392,31 @@ public class Cartelera extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ano;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnRegresar;
+    private javax.swing.JButton btnSalir;
+    private javax.swing.JLabel clasificacion;
+    private javax.swing.JComboBox<String> comboBuscar;
+    private javax.swing.JLabel duracion;
+    private javax.swing.JLabel genero;
+    private javax.swing.JLabel idioma;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblR;
+    private javax.swing.JLabel pais;
+    private javax.swing.JTextField salidaAño;
+    private javax.swing.JTextField salidaClasificacion;
+    private javax.swing.JTextField salidaDuracion;
+    private javax.swing.JTextField salidaGenero;
+    private javax.swing.JTextField salidaIdioma;
+    private javax.swing.JTextField salidaPais;
+    private javax.swing.JTextArea salidaResumen;
+    private javax.swing.JTextField salidaSubtitulos;
+    private javax.swing.JLabel salidaTitulo;
+    private javax.swing.JLabel sub;
     // End of variables declaration//GEN-END:variables
 }

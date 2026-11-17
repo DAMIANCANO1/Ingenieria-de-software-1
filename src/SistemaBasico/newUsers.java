@@ -101,6 +101,7 @@ public class newUsers extends javax.swing.JFrame {
         jPanel1.add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(388, 450, -1, -1));
 
         btnBaja.setText("EJECUTAR");
+        btnBaja.addActionListener(this::btnBajaActionPerformed);
         jPanel1.add(btnBaja, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 349, -1, -1));
 
         btnRegresar.setBackground(new java.awt.Color(255, 102, 102));
@@ -127,7 +128,9 @@ public class newUsers extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaActionPerformed
-        // TODO add your handling code here:
+        altaUsuarios aU = new  altaUsuarios();
+        aU.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnAltaActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
@@ -153,6 +156,12 @@ public class newUsers extends javax.swing.JFrame {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBajaActionPerformed
+        eliminaUsuarios eU = new  eliminaUsuarios();
+        eU.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnBajaActionPerformed
 
     /**
      * @param args the command line arguments
